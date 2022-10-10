@@ -18,8 +18,8 @@ jobs:
         distribution: 'temurin'
         cache: maven
         
-    - name: build and test person_service
+    - name: build and test person-service
       run: mvn -f fund-management/person-service -B package --f pom.xml -Dmaven.test.skip=true
       
-    - name: build and test account_service
+    - name: build and test account-service
       run: mvn -f fund-management/account-service -B package --f pom.xml -Dmaven.test.skip=true
