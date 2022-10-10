@@ -90,9 +90,6 @@ public class PersonController {
     private Person getPersonInfo(int id){
         Optional<Person> personObj = repo.findById(id);
 
-        if (personObj.isPresent()){
-            return personObj.get();
-        }
-        return null;
+        return personObj.orElse(null);
     }
 }
