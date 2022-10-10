@@ -28,13 +28,18 @@ public class PersonController {
             .email(person.getEmail())
             .phoneno(person.getPhoneno())
             .build());
-        return new ResponseEntity<>(newPerson, HttpStatus.OK);
+        return new ResponseEntity<>(newPerson, HttpStatus.CREATED);
     }
     @GetMapping("/persons/person{id}")
     public ResponseEntity<Person> getPersonById(@PathVariable int id){
         try{
             Person personObj = getPersonInfo(id);
-            return new ResponseEntity<>(personObj, HttpStatus.OK);
+
+            if (personObj != null){
+                
+                return new ResponseEntity<>(personObj, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -50,7 +55,7 @@ public class PersonController {
         }
     }
 
-    @DeleteMapping("/persons/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deletePersonById(@PathVariable int id) {
         try {
 
@@ -58,7 +63,7 @@ public class PersonController {
 
             if (psn != null) {
                 repo.deleteById(id);
-                return new ResponseEntity<>(HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
