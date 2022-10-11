@@ -3,20 +3,14 @@ package com.accountservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.accountservice.dao.AccountRepository;
 import com.accountservice.model.Account;
+import com.accountservice.exception.AccountNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/")
@@ -40,67 +34,43 @@ public class AccountController {
 
     @GetMapping("/account/account{id}")
     public ResponseEntity<Account> getAccountById(@PathVariable int id){
-        try{
-            Account accountObj = getAccountInfo(id);
+        Account accObj = repo.findById(id)
+            .orElseThrow(() -> new AccountNotFoundException("Not found account with id = " + id));
 
-            if (accountObj != null){
-                
-                return new ResponseEntity<>(accountObj, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(accObj, HttpStatus.OK);
     }
 
-    @GetMapping("/persons/person")
+    @GetMapping("/accounts/account")
     public ResponseEntity<List<Account>> getAccountList() {
-        try {
-            return new ResponseEntity<>(repo.findAll(), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        List<Account> accounts = new ArrayList<Account>();
+
+        repo.findAll().forEach(accounts::add);
+
+        if (accounts.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/account{id}")
     public ResponseEntity<HttpStatus> deletePersonById(@PathVariable int id) {
-        try {
-
-            Account acc = getAccountInfo(id);
-
-            if (acc != null) {
-                repo.deleteById(id);
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        repo.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/accounts/{id}")
     public ResponseEntity<Account> updatePerson(@PathVariable int id, @RequestBody Account account) {
 
-        Account accountObj = getAccountInfo(id);
+        Account accObj = repo.findById(id)
+            .orElseThrow(() -> new AccountNotFoundException("Not found person with id = " + id));
 
-        if (accountObj != null) {
-            accountObj.setAccountType(account.getAccountType());
-            accountObj.setAccountNumber(account.getAccountNumber());
-            accountObj.setAccountName(account.getAccountName());
-            accountObj.setBalance(account.getBalance());
-            accountObj.setDate(account.getDate());
-            return new ResponseEntity<>(repo.save(accountObj), HttpStatus.OK);
-        }
+            accObj.setAccountType(account.getAccountType());
+            accObj.setAccountNumber(account.getAccountNumber());
+            accObj.setAccountName(account.getAccountName());
+            accObj.setBalance(account.getBalance());
+            accObj.setDate(account.getDate());
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(repo.save(accObj), HttpStatus.OK);
     }
 
-    private Account getAccountInfo(int id){
-        Optional<Account> accountObj = repo.findById(id);
-
-        return accountObj.orElse(null);
-    }
 }
