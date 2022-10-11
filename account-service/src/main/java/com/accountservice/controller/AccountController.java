@@ -49,7 +49,7 @@ public class AccountController {
         if (accounts.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/account{id}")
