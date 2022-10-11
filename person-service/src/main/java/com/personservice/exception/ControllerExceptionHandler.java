@@ -22,7 +22,7 @@ public class ControllerExceptionHandler{
           HttpStatus.INTERNAL_SERVER_ERROR,
           LocalDateTime.now(),
           exception.getMessage());
-      
+
       return new ResponseEntity<ErrorResponse>(msg, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

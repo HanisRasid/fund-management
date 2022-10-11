@@ -49,7 +49,6 @@ public class PersonController {
         if (persons.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-
         return new ResponseEntity<>(null, HttpStatus.OK);
         
     }

@@ -17,7 +17,6 @@ public class ErrorResponse {
         this.timeStamp = timeStamp;
         this.message = message;
     }
-
     public ErrorResponse(HttpStatus status, String message) {
         this();
         this.message = message;
