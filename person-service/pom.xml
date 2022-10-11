@@ -62,6 +62,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>person-service</finalName>
     </build>
 
 </project>

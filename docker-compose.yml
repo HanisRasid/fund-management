@@ -1,0 +1,63 @@
+version: "3"
+services:
+  person-service:
+    container_name: person-service
+    image: person-service:latest
+    build:
+      context: /person-service
+      dockerfile: Dockerfile
+    ports:
+      - 9091:8081
+    environment:
+      NODE_ENV: production
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: db
+    links:
+      - db
+    volumes:
+      - ./:/src
+
+  account-service:
+    container_name: account-service
+    image: account-service:latest
+    build:
+      context: /account-service
+      dockerfile: Dockerfile
+    ports:
+      - 9090:8080
+    environment:
+      NODE_ENV: production
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: db
+    links:
+      - db
+    volumes:
+      - ./:/src
+  db:
+    image: mysql:5.7
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'root'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'root'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '3306:3306'
+      # Where our data will be persisted
+    volumes:
+      - db:/var/lib/mysql
+volumes:
+  db:
+    driver: local
