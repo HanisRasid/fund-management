@@ -35,7 +35,7 @@ public class AccountControllerTests {
     private ObjectMapper objectMapper;
 
     @Test
-    void shouldReturnNotFoundTutorial() throws Exception{
+    void shouldReturnNotFoundAccount() throws Exception{
         int id = 1;
 
         when(accountRepository.findById(id)).thenReturn(Optional.empty());

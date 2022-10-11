@@ -53,13 +53,13 @@ public class AccountController {
     }
 
     @DeleteMapping("/delete/account{id}")
-    public ResponseEntity<HttpStatus> deletePersonById(@PathVariable int id) {
+    public ResponseEntity<HttpStatus> deleteAccountById(@PathVariable int id) {
         repo.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/accounts/{id}")
-    public ResponseEntity<Account> updatePerson(@PathVariable int id, @RequestBody Account account) {
+    public ResponseEntity<Account> updateAccount(@PathVariable int id, @RequestBody Account account) {
 
         Account accObj = repo.findById(id)
             .orElseThrow(() -> new AccountNotFoundException("Not found person with id = " + id));
